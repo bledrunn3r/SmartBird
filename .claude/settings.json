@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE=$(jq -r '.tool_input.file_path // .tool_response.filePath // empty'); if echo \"$FILE\" | grep -q '/backend/'; then echo \"[RainBird] Restarting backend...\"; pkill -f 'uvicorn app.main:app' 2>/dev/null; sleep 1; cd /Users/abbas/Documents/dev/RainBird/backend && /Users/abbas/Documents/dev/RainBird/backend/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload >> /tmp/rainbird-backend.log 2>&1 & echo \"[RainBird] Backend restarted (PID $!)\"; elif echo \"$FILE\" | grep -q '/frontend/'; then echo \"[RainBird] Restarting frontend...\"; pkill -f 'vite' 2>/dev/null; sleep 1; cd /Users/abbas/Documents/dev/RainBird/frontend && npm run dev >> /tmp/rainbird-frontend.log 2>&1 & echo \"[RainBird] Frontend restarted (PID $!)\"; fi",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}
